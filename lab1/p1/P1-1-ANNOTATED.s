@@ -69,87 +69,93 @@ main:					// mark the symbolic memory location for the main loop and where the p
 
 // for loop body
 .L3:
-	adrp	x0, var1
+	adrp	x0, var1	// calculate the base address of the memory page where var1 is
+	add	x0, x0, :lo12:var1	// isolate the lower 12 bits
+	ldrsb	w0, [x0]	// load var 1 as a signed var
+	and	w1, w0, 255		// bitwise and promoting var1 to a byte sized int
+	adrp	x0, var1	// recalculate the page base address
+	add	x0, x0, :lo12:var1	// isolate the lower 12 bits again
+	ldrsb	w0, [x0]	// load a signed bye into w0
+	and	w0, w0, 255		// convert the value to an int again
+	mul	w0, w1, w0		// multiply the two registers to do var1 * var1
+	and	w0, w0, 255		// simulate byte overflow
+	sxtb	w1, w0		// store the value in a 32 bit number
+	adrp	x0, var1	// recompute the page size
 	add	x0, x0, :lo12:var1
-	ldrsb	w0, [x0]
-	and	w1, w0, 255
-	adrp	x0, var1
+	strb	w1, [x0]	// store the lower 8 bits of var1
+	adrp	x0, var1	// recompute page size
 	add	x0, x0, :lo12:var1
-	ldrsb	w0, [x0]
-	and	w0, w0, 255
-	mul	w0, w1, w0
-	and	w0, w0, 255
-	sxtb	w1, w0
-	adrp	x0, var1
+	mov	w1, 1			// copy 1 into w1 because n/n is always 1
+	strb	w1, [x0]	// store lower 8 bites of w1 into var1
+	// end of var1/=var1
+	adrp	x0, var1	// recompute page size
 	add	x0, x0, :lo12:var1
-	strb	w1, [x0]
-	adrp	x0, var1
+	ldrsb	w0, [x0]	// load current value of var1 into w1
+	and	w0, w0, 255		// mask w0 to an 8 bit number
+	ubfiz	w0, w0, 1, 7	// 1 bit left shift as a shortcut of 2x
+	and	w0, w0, 255		// mask result to 8 bits
+	sxtb	w1, w0		// sign extend 32 bits into var1
+	adrp	x0, var1	// recompute page size for var1
 	add	x0, x0, :lo12:var1
-	mov	w1, 1
-	strb	w1, [x0]
-	adrp	x0, var1
+	strb	w1, [x0]	// store the result of the addition
+	adrp	x0, var1	// recompute page size
 	add	x0, x0, :lo12:var1
-	ldrsb	w0, [x0]
-	and	w0, w0, 255
-	ubfiz	w0, w0, 1, 7
-	and	w0, w0, 255
-	sxtb	w1, w0
-	adrp	x0, var1
-	add	x0, x0, :lo12:var1
-	strb	w1, [x0]
-	adrp	x0, var1
-	add	x0, x0, :lo12:var1
-	strb	wzr, [x0]
-	ldr	w0, [sp, 12]
-	sub	w0, w0, #1
-	str	w0, [sp, 12]
+	strb	wzr, [x0]	// store zero register into var1, a shortcut to n-n which is always 0
+	ldr	w0, [sp, 12]	// load the loop counter value
+	sub	w0, w0, #1		// subtract 1 from var5
+	str	w0, [sp, 12]	// store var5 again
 
 // for loop condition
 .L2:
 	ldr	w0, [sp, 12]	// get the current value of var5 from the stack
 	cmp	w0, 0			// is var5 greater than 0? 
-	bgt	.L3		// 
+	bgt	.L3		// if the greater than flag is high then jump to L3 for the loop execution
 
+// do while loop
 .L4:
-	adrp	x0, var4
+	adrp	x0, var4	// compute the page size of var4
 	add	x0, x0, :lo12:var4
-	ldr	w0, [x0]
-	sub	w1, w0, #1
-	adrp	x0, var4
+	ldr	w0, [x0]		// load 32 bit value of var4 because it's an int
+	sub	w1, w0, #1		// subtract 1 from var4 store in a different register
+	adrp	x0, var4	// recompute page size
 	add	x0, x0, :lo12:var4
-	str	w1, [x0]
-	adrp	x0, var4
+	str	w1, [x0]		// store the result back into var4
+	adrp	x0, var4	// recompute page size
 	add	x0, x0, :lo12:var4
-	ldr	w0, [x0]
-	cmp	w0, 0
-	bne	.L4
-	b	.L8
+	ldr	w0, [x0]		// reload the updated value
+	cmp	w0, 0			// compare var4 and 0 for the var4>0 condition
+	bne	.L4				// while it's not equal to var4 jump to the start of the do while loop
+	b	.L8				// otherwise jump to the condition of the while loop
 
+// body of while loop
 .L7:
-	adrp	x0, var2
+	adrp	x0, var2	// compute page size for var2
 	add	x0, x0, :lo12:var2
-	ldrb	w1, [x0]
-	adrp	x0, var2
+	ldrb	w1, [x0]	// load var2 as a register byte
+	adrp	x0, var2	// compute page size
 	add	x0, x0, :lo12:var2
-	strb	w1, [x0]
-	b	.L6
+	strb	w1, [x0]	// store var2
+	b	.L6				// jump down to the end because this will only run once in the program lifetime
 
+// condition of while loop
 .L8:
-	adrp	x0, var3
+	adrp	x0, var3	// compute page size for var3
 	add	x0, x0, :lo12:var3
-	ldr	w0, [x0]
-	cmp	w0, 3
-	beq	.L7
-	nop
+	ldr	w0, [x0]		// load 32 bit value of var3 because it's an int
+	cmp	w0, 3			// compare var3 to 3
+	beq	.L7				// if they're equal jump to the body
+	nop					// optimizatino for lightning on 4 bytes
 
-3
+// end of the program
 .L6:
-	nop
-	add	sp, sp, 16
-	.cfi_def_cfa_offset 0
-	ret
-	.cfi_endproc
+	nop					// 4 byte spacer which is a gcc optimization
+	add	sp, sp, 16		// restore the stack pointer deallocating the 16 byte stack frame
+	.cfi_def_cfa_offset 0	// declare to debuggers that the sp was reset to 0
+	ret					// jumps back to the c runtime caller
+	.cfi_endproc		// closes the cfi record
+
+// terminal end of main
 .LFE0:
-	.size	main, .-main
-	.ident	"GCC: (Debian 14.2.0-19) 14.2.0"
-	.section	.note.GNU-stack,"",@progbits
+	.size	main, .-main	// calucaltes the size of main
+	.ident	"GCC: (Debian 14.2.0-19) 14.2.0"	// compiler version identification
+	.section	.note.GNU-stack,"",@progbits	// notifies the linker that this does not require an executable stack
