@@ -15,7 +15,7 @@ int main(void) {
 	while (1) {
 		printf("\nProblem: ");
 		scanf(" %d %c %d", &op1, &op, &op2);
-		
+
 		switch (op) {
 			case '+':
 				result = add(op1, op2);
@@ -42,8 +42,6 @@ int main(void) {
 
 		printf("Result: %d\n", result);
 	}
-
-	stop:
-
+	
 	return 0;
 }
