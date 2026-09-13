@@ -10,53 +10,37 @@ signed int op1 = 0;
 signed int op2 = 0;
 signed int result = 0;
 
-int main(void) {
-	// infinite loop to run the program in
-	// this loop is equivalent to just repeatedly doing an rjmp back
-	// to start as all the values remain initialized in their previous state
-	
+int main(void) {	
 	printf("Calculator Program\nEnter a number to start, -1 to exit...");
 	while (1) {
-		printf("\nFirst operand: ");
-		scanf(" %d", &op1);
+		printf("\nProblem: ");
+		scanf(" %d %c %d", &op1, &op, &op2);
 		
-		choose_operand:
-	
-		printf("Operation (+, -, *, /), -1 to exit: ");
-		scanf(" %c", &op);
-
-		if (op1 == -1) { goto stop; }
-
 		switch (op) {
 			case '+':
-				printf("Second operand: ");
-				scanf(" %d", &op2);
 				result = add(op1, op2);
 				break;
 			case '-':
-				printf("Second operand: ");
-				scanf(" %d", &op2);
 				result = sub(op1, op2);
 				break;
 			case '*':
-				printf("Second operand: ");
-				scanf(" %d", &op2);
 				result = mul(op1, op2);
 				break;
 			case '/':
-				printf("Second operand: ");
-				scanf(" %d", &op2);
+				if (op2 == 0) {
+					printf("Error: Division by zero\n");
+					break;
+				}
 				int rem;
 				result = div(op1, op2, &rem);
-				printf("Remainder: %d", rem);
-				break;
+				printf("Result: %d Remainder: %d\n", result, rem);
+				continue;
 			default:
-				printf("Not a valid operation, choose a different operation...");
-				goto choose_operand;
-				break;
+				printf("Error: Invalid operator\n");
+				continue;
 		}
 
-		printf("Result: %d", result);
+		printf("Result: %d\n", result);
 	}
 
 	stop:
