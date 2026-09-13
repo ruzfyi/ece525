@@ -15,40 +15,40 @@ int main(void) {
 	// this loop is equivalent to just repeatedly doing an rjmp back
 	// to start as all the values remain initialized in their previous state
 	
-	printf("Calculator Program\nEnter a number to start, -1 to exit...\n");
+	printf("Calculator Program\nEnter a number to start, -1 to exit...");
 	while (1) {
-		printf("First operand: ");
-		scanf("%d", &op1);
+		printf("\nFirst operand: ");
+		scanf(" %d", &op1);
 		
 		choose_operand:
 	
-		printf("Operation (+, -, *, /), -1 to exit: ");
-		scanf(" %c\n", &op);
+		printf("\nOperation (+, -, *, /), -1 to exit: ");
+		scanf(" %c", &op);
 
 		if (op1 == -1) { goto stop; }
 
 		switch (op) {
 			case '+':
 				printf("Second operand: ");
-				scanf("%d", &op2);
+				scanf(" %d", &op2);
 				result = add(op1, op2);
 				break;
 			case '-':
 				printf("Second operand: ");
-				scanf("%d", &op2);
+				scanf(" %d", &op2);
 				result = sub(op1, op2);
 				break;
 			case '*':
 				printf("Second operand: ");
-				scanf("%d", &op2);
+				scanf(" %d", &op2);
 				result = mul(op1, op2);
 				break;
 			case '/':
 				printf("Second operand: ");
-				scanf("%d", &op2);
+				scanf(" %d", &op2);
 				int rem;
 				result = div(op1, op2, &rem);
-				printf("Remainder: %d\n", rem);
+				printf("Remainder: %d", rem);
 				break;
 			default:
 				printf("Not a valid operation, choose a different operation...");
