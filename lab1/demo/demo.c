@@ -3,7 +3,7 @@
 extern int add(int a, int b);
 extern int sub(int a, int b);
 extern int mul(int a, int b);
-extern int div(int a, int b);
+extern int div(int a, int b, int *rem);
 
 unsigned char op = ' ';
 signed int op1 = 0;
@@ -46,10 +46,12 @@ int main(void) {
 			case '/':
 				printf("Second operand: ");
 				scanf("%d", &op2);
-				result = div(op1, op2);
+				int rem;
+				result = div(op1, op2, &rem);
+				printf("Remainder: %d\n", rem);
 				break;
 			default:
-				scanf("Not a valid operation, choose a different operation...");
+				printf("Not a valid operation, choose a different operation...");
 				goto choose_operand;
 				break;
 		}
