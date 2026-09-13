@@ -22,7 +22,7 @@ int main(void) {
 		
 		choose_operand:
 	
-		printf("\nOperation (+, -, *, /), -1 to exit: ");
+		printf("Operation (+, -, *, /), -1 to exit: ");
 		scanf(" %c", &op);
 
 		if (op1 == -1) { goto stop; }
